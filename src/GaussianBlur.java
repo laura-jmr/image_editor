@@ -2,34 +2,29 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class GaussianBlur {
-	
-	private static BufferedImage origImg;
+
 	public static int radius;
-	private static Converter converter;
-	private static Pixel[][] bluredPixelArray;
-	
 	private static int red;
 	private static int green;
 	private static int blue;
 	private static int divR;
 	private static int divG;
 	private static int divB;
-	private static int sum;
+	private static Pixel[][] bluredPixelArray;
+	private static Converter converter;
+	private static BufferedImage origImg;
 
 	public BufferedImage startBlur(BufferedImage img, int r) {
-		origImg = img;
-		radius = r;
-		converter = new Converter();
-		bluredPixelArray = converter.imageToPixelArray(img);
-		
 		red = 0;
 		green = 0;
 		blue = 0;
 		divR = 0;
 		divG = 0;
 		divB = 0;
-		sum = 0;
-		
+		converter = new Converter();
+		origImg = img;
+		radius = r;
+		bluredPixelArray = converter.imageToPixelArray(img);
 		BufferedImage bluredImg = blurImage(img);
 
 		return bluredImg;
@@ -70,6 +65,7 @@ public class GaussianBlur {
 	}
 
 	private static int countSumOFSurroundings (Pixel centerPixel, Pixel[][] pixelArray, BufferedImage img, String color, int radius) {
+		int sum = 0;
 
 		if (radius <= 0)
 			radius = 1;
@@ -79,28 +75,60 @@ public class GaussianBlur {
 				for (int j = -i + 1; j <= i; j++) {
 					try {
 						if (counter == 0) {
-			
-							calculateSumAndDiv("red", centerPixel.posX + j, centerPixel.posY - i, pixelArray);
-							calculateSumAndDiv("green", centerPixel.posX + j, centerPixel.posY - i, pixelArray);
-							calculateSumAndDiv("blue", centerPixel.posX + j, centerPixel.posY - i, pixelArray);
+							if (color == "red") {
+								sum += pixelArray[centerPixel.posX + j][centerPixel.posY - i].red;
+								divR++;
+							}
+							if (color == "green") {
+								sum += pixelArray[centerPixel.posX + j][centerPixel.posY - i].green;
+								divG++;
+							}
+							if (color == "blue") {
+								sum += pixelArray[centerPixel.posX + j][centerPixel.posY - i].blue;
+								divB++;
+							}
 						}
 						if (counter == 1) {
-							
-							calculateSumAndDiv("red", centerPixel.posX + i, centerPixel.posY + j, pixelArray);
-							calculateSumAndDiv("green", centerPixel.posX + i, centerPixel.posY + j, pixelArray);
-							calculateSumAndDiv("blue", centerPixel.posX + i, centerPixel.posY + j, pixelArray);
+							if (color == "red") {
+								sum += pixelArray[centerPixel.posX + i][centerPixel.posY + j].red;
+								divR++;
+							}
+							if (color == "green") {
+								sum += pixelArray[centerPixel.posX + i][centerPixel.posY + j].green;
+								divG++;
+							}
+							if (color == "blue") {
+								sum += pixelArray[centerPixel.posX + i][centerPixel.posY + j].blue;
+								divB++;
+							}
 						}
 						if (counter == 2) {
-							
-							calculateSumAndDiv("red", centerPixel.posX - j, centerPixel.posY + i, pixelArray);
-							calculateSumAndDiv("green", centerPixel.posX - j, centerPixel.posY + i, pixelArray);
-							calculateSumAndDiv("blue", centerPixel.posX - j, centerPixel.posY + i, pixelArray);
+							if (color == "red") {
+								sum += pixelArray[centerPixel.posX - j][centerPixel.posY + i].red;
+								divR++;
+							}
+							if (color == "green") {
+								sum += pixelArray[centerPixel.posX - j][centerPixel.posY + i].green;
+								divG++;
+							}
+							if (color == "blue") {
+								sum += pixelArray[centerPixel.posX - j][centerPixel.posY + i].blue;
+								divB++;
+							}
 						}
 						if (counter == 3) {
-							
-							calculateSumAndDiv("red", centerPixel.posX - i, centerPixel.posY - j, pixelArray);
-							calculateSumAndDiv("green", centerPixel.posX - i, centerPixel.posY - j, pixelArray);
-							calculateSumAndDiv("blue", centerPixel.posX - i, centerPixel.posY - j, pixelArray);
+							if (color == "red") {
+								sum += pixelArray[centerPixel.posX - i][centerPixel.posY - j].red;
+								divR++;
+							}
+							if (color == "green") {
+								sum += pixelArray[centerPixel.posX - i][centerPixel.posY - j].green;
+								divG++;
+							}
+							if (color == "blue") {
+								sum += pixelArray[centerPixel.posX - i][centerPixel.posY - j].blue;
+								divB++;
+							}
 						}
 					} catch (ArrayIndexOutOfBoundsException e) {}
 				}
@@ -108,25 +136,6 @@ public class GaussianBlur {
 		}
 
 		return sum;
-	}
-	
-	private static void calculateSumAndDiv (String color, int x, int y, Pixel[][] pixelArray) {
-		switch (color) {
-			case "red":
-				sum += pixelArray[x][y].red;
-				divR++;
-				break;
-			case "green":
-				sum += pixelArray[x][y].green;
-				divG++;
-				break;
-			case "blue":
-				sum += pixelArray[x][y].blue;
-				divB++;
-				break;
-			default:
-				break;
-		}
 	}
 
 

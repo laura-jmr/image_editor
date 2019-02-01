@@ -2,6 +2,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 
 public class Main {
 
@@ -11,8 +12,15 @@ public class Main {
 	public static void main (String[] args) {
 		GUI gui = new GUI();
 		GaussianBlur blur = new GaussianBlur();
-		blur.startBlur("/Users/virtus/Desktop/Snapchat-471513717.jpg", 1);
-		//gui.start();
+		gui.createGUI("image_editor");
+		try {
+			fileURL = gui.getPath();
+			URL url = new URL(fileURL);
+			BufferedImage origImg = ImageIO.read(url);
+			blur.startBlur(origImg, 1);
+		} catch (IOException e) {
+			System.err.println(e.getMessage());
+		}
 	}
 
 	private static String defaultSaveURL() {
